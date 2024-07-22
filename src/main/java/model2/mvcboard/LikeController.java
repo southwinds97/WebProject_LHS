@@ -54,11 +54,9 @@ public class LikeController extends HttpServlet {
         
         if (dao.isLike(postnum, id)) {
             result = dao.deleteLike(postnum, id);
-            System.out.println("delete:" + result);
         }
         else {
             result = dao.insertLike(postnum, id);
-            System.out.println("insert:" + result);
         }
         dao.close();
 
