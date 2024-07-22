@@ -9,11 +9,6 @@ import common.DBConnPool;
 
 //커넥션풀을 통한 DB연결을 위해 클래스 상속 
 public class CommentDAO extends DBConnPool {
-	
-	//기본생성자(정의하지 않아도 자동으로 삽입된다)
-    public CommentDAO() {
-        super();
-    }
 
     // 댓글 갯수를 카운트하는 함수
     public int selectCount(Map<String, Object> map) {
@@ -72,7 +67,7 @@ public class CommentDAO extends DBConnPool {
                 dto.setId(rs.getString(3));
                 dto.setName(rs.getString(4));
                 dto.setContent(rs.getString(5));
-                dto.setPostdate(rs.getDate(6));
+                dto.setCommentdate(rs.getDate(6));
                 
                 comments.add(dto);
             }

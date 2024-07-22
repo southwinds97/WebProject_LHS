@@ -32,6 +32,7 @@
   <script src="js/jquery-ui.min.js"></script>
   <script src="js/swiper-bundle.min.js"></script>
   <script src="js/ui-common.js?v=<?php echo time(); ?>"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -716,6 +717,28 @@
                 </tr>
               </tbody>
             </table>
+                <div class="like">
+                    <!-- 좋아요 페이지 ajax로 불러오기-->
+                    <script>
+                        $(function() {
+                            $.ajax({
+                                url: './like.do',
+                                type: 'GET',
+                                data: { 
+                                    postnum: '${idx}',
+                                    board_type: '${board_type}'
+                                    },
+                                success: function(response) {
+                                    console.log("AJAX 요청 성공. 응답 내용:", response);
+                                    $('.like').html(response);
+                                },
+                                error: function(jqXHR, textStatus, errorThrown) {
+                                    console.log("AJAX 요청 실패. 상태:", textStatus, "오류:", errorThrown);
+                                }
+                            });
+                        });
+                    </script>
+                </div>
             <div class="board_btn">
 			    <c:if test="${ dto.id eq sessionScope.user_id }">
 			        <button type="button" style="background:black; color:white; margin-right:10px;" onclick="location.href='pass.do?mode=edit&idx=${ param.idx }&board_type=${board_type}';">
@@ -737,7 +760,6 @@
             </jsp:include>
           </div>
           <div class="comment_list">
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
                 <script>
                 $(function() {
                 	$.ajax({

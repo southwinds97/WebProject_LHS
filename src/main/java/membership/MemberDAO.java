@@ -91,4 +91,41 @@ public class MemberDAO extends DBConnPool {
         }
         return affected;
     }
+
+    // id를 찾는 메소드
+    public String findId(String email) {
+        String id = null;
+        try {
+            String query = "SELECT id FROM member WHERE email=?";
+            psmt = con.prepareStatement(query);
+            psmt.setString(1, email);
+            rs = psmt.executeQuery();
+            if (rs.next()) {
+                id = rs.getString("id");
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return id;
+    }
+
+    // 비밀번호를 찾는 메소드
+    public String findPw(String id, String email) {
+        String pw = null;
+        try {
+            String query = "SELECT pass FROM member WHERE id=? AND email=?";
+            psmt = con.prepareStatement(query);
+            psmt.setString(1, id);
+            psmt.setString(2, email);
+            rs = psmt.executeQuery();
+            if (rs.next()) {
+                pw = rs.getString("pass");
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pw;
+    }
 }

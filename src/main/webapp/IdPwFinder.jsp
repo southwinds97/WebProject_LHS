@@ -41,18 +41,23 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
   </head>
   <script type="text/javascript">
     function validateForm(form) {
-      if (form.user_id.value == "") {
+      if (form.user_id && form.user_id.value == "") {
         alert("아이디를 입력하세요.");
         form.user_id.focus();
         return false;
       }
-      if (form.user_pw.value == "") {
+      if (form.user_pw && form.user_pw.value == "") {
         alert("비밀번호를 입력하세요.");
         form.user_pw.focus();
         return false;
       }
+      if (form.email && form.email.value == "") {
+        alert("이메일을 입력하세요.");
+        form.email.focus();
+        return false;
+      }
     }
-  </script>
+</script>
   <body>
     <div id="skip_navi"><a href="#container">본문바로가기</a></div>
     <div id="wrap">
@@ -466,9 +471,9 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
             </ul>
           </nav>
           <% if (session.getAttribute("UserId") == null) { %>
-          <a href="login.jsp" class="login"></a>
+          <a href="login.do" class="login"></a>
           <% } else if (session.getAttribute("UserId") != null) { %>
-          <a href="ProFil.jsp" class="profil"></a>
+          <a href="ProFil.do" class="profil"></a>
           <% } %>
           <div class="side_wrap">
             <ul class="home_lang">
@@ -821,46 +826,75 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
         <div class="contents">
           <div class="inner">
             <div class="login_area">
-            
-            <!-- 아이디 찾기 폼 -->
-            <%
-			String mode = request.getParameter("mode");
-			if ("findId".equals(mode)) {
-			%>
-			    <h2>ID 찾기</h2>
-			    <form name="findIdFrm" method="post" action="findId.do">
-			        <fieldset>
-			            <legend>Id 찾기</legend>
-			            <div class="row input_wrap1">
-			                <input type="text" name="email" placeholder="이메일" />
-			            </div>
-			            <input type="submit" value="로그인" class="login_btn" />
-			        </fieldset>
-			    </form>
-			<%
-			} else if ("findPw".equals(mode)) {
-			%>
-			    <h2>PW 찾기</h2>
-			    <form name="findPwFrm" method="post" action="findPw.do">
-			        <fieldset>
-			            <legend>비밀번호 찾기</legend>
-			            <div class="row input_wrap1">
-			                <input type="text" name="user_id" placeholder="아이디" />
-			            </div>
-			            <div class="row input_wrap2">
-			                <input type="text" name="user_email" placeholder="이메일" />
-			            </div>
-			            <input type="submit" value="비밀번호 찾기" class="find_pw_btn" />
-			        </fieldset>
-			    </form>
-			<%
-			}
-			%>
+                <!-- 아이디 찾기 폼 -->
+                <%
+                String mode = request.getParameter("mode");
+                if ("findId".equals(mode)) {
+                %>
+                    <h2>ID 찾기</h2>
+                    <form name="findIdFrm" method="post" action="find.do" onsubmit="return validateForm(this);">
+                        <fieldset>
+                            <legend>Id 찾기</legend>
+                            <div class="row input_wrap1">
+                                <input type="text" name="email" placeholder="이메일" />
+                            </div>
+                            <input type="hidden" name="mode" value="findId" />
+                            <input type="submit" value="ID 찾기" class="login_btn" />
+                        </fieldset>
+                    </form>
+                    <% if (request.getAttribute("foundId") != null) { %>
+                    	<div style="border: 1px solid #dadada; 
+                    		border-radius: 5px;
+	                    	width: 100%;
+	                        background: none;
+	                        height: 46px;
+	                        padding: 10px;
+	                        margin-top: 20px;"
+                        >
+						<p>찾은 아이디: <%= request.getAttribute("foundId") %></p>
+                        <!-- PW 찾기 버튼 -->
+                    	</div>
+                        <a href="find.do?mode=findPw" class="login_btn">비밀번호 찾기</a>
+                        <a href="login.do" class="login_btn">로그인</a>
+                    <% } %>
+                <%
+                } else if ("findPw".equals(mode)) {
+                %>
+                    <h2>PW 찾기</h2>
+                    <form name="findPwFrm" method="post" action="find.do" onsubmit="return validateForm(this);">
+                        <fieldset>
+                            <legend>비밀번호 찾기</legend>
+                            <div class="row input_wrap1">
+                                <input type="text" name="id" placeholder="아이디" />
+                            </div>
+                            <div class="row input_wrap2">
+                                <input type="text" name="email" placeholder="이메일" />
+                            </div>
+                            <input type="hidden" name="mode" value="findPw" />
+                            <input type="submit" value="비밀번호 찾기" class="login_btn" />
+                        </fieldset>
+                    </form>
+                    <% if (request.getAttribute("foundPw") != null) { %>
+                    <div style="border: 1px solid #dadada; 
+                    		border-radius: 5px;
+	                    	width: 100%;
+	                        background: none;
+	                        height: 46px;
+	                        padding: 10px;
+	                        margin-top: 20px;"
+                     >
+                        찾은 비밀번호: <%= request.getAttribute("foundPw") %>
+                    </div>
+                    <a href="login.do" class="login_btn">로그인</a>
+                    <% } %>
+                <%
+                }
+                %>
             </div>
             <ul class="link_wrap">
-              <li><a href="#">비밀번호 찾기</a></li>
-              <li><a href="#">아이디 찾기</a></li>
-              <li><a href="Register.do">회원가입</a></li>
+                <li><a href="find.do?mode=findId">아이디 찾기</a></li>
+                <li><a href="find.do?mode=findPw">비밀번호 찾기</a></li>
+                <li><a href="Register.do">회원가입</a></li>
             </ul>
           </div>
         </div>

@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import membership.MemberDAO;
 import membership.MemberDTO;
+import utils.CookieManager;
 import utils.JSFunction;
 
 //@WebServlet("/login.do")
@@ -24,34 +25,37 @@ public class LoginController extends HttpServlet {
 	}
 	
 	    protected void doPost(HttpServletRequest req, HttpServletResponse resp) 
-	        throws ServletException, IOException {
-	    // POST 요청을 처리하는 로직을 여기에 작성합니다.
-	    String userId = req.getParameter("user_id");
-	    String userPwd = req.getParameter("user_pw");
-	  
-	    MemberDAO dao = new MemberDAO();
-        MemberDTO dto = dao.getMemberDTO(userId, userPwd);
-    
-        if (dto != null && dto.getId() != null) {
-            HttpSession session = req.getSession();
-            session.setAttribute("UserId", dto.getId()); 
-            session.setAttribute("UserName", dto.getName());
-            session.setAttribute("user_id", userId); 
-            session.setAttribute("user_pw", userPwd);
-        
-            String prevPage = (String) session.getAttribute("prevPage");
-            if (prevPage != null) {
-                // 이전 페이지로 리다이렉트
-                resp.sendRedirect(prevPage);
-                // 세션에서 이전 페이지 정보 제거
-                session.removeAttribute("prevPage");
-            } else {
-                // 기본 페이지로 리다이렉트
-                resp.sendRedirect("index.do");
-            }
-        } else {
-            JSFunction.alertBack(resp, "아이디 혹은 비밀번호가 틀렸습니다.");
-            return;
-        }
-    }
+	    	    throws ServletException, IOException {
+	    	// POST 요청을 처리하는 로직을 여기에 작성합니다.
+	    	String userId = req.getParameter("user_id");
+	    	String userPwd = req.getParameter("user_pw");
+
+	    	MemberDAO dao = new MemberDAO();
+	    	MemberDTO dto = dao.getMemberDTO(userId, userPwd);
+
+	    	if (dto != null && dto.getId() != null) {
+	    	    HttpSession session = req.getSession();
+	    	    session.setAttribute("UserId", dto.getId()); 
+	    	    session.setAttribute("UserName", dto.getName());
+	    	    session.setAttribute("user_id", userId); 
+	    	    session.setAttribute("user_pw", userPwd);
+
+	    	    // 로그인 성공 후 ID를 저장하는 쿠키 생성
+	    	    CookieManager.makeCookie(resp, "savedId", userId, 60 * 60 * 24 * 7); // 쿠키는 일주일 동안 유효
+
+	    	    String prevPage = (String) session.getAttribute("prevPage");
+	    	    if (prevPage != null) {
+	    	        // 이전 페이지로 리다이렉트
+	    	        resp.sendRedirect(prevPage);
+	    	        // 세션에서 이전 페이지 정보 제거
+	    	        session.removeAttribute("prevPage");
+	    	    } else {
+	    	        // 기본 페이지로 리다이렉트
+	    	        resp.sendRedirect("index.do");
+	    	    }
+	    	} else {
+	    	    JSFunction.alertBack(resp, "아이디 혹은 비밀번호가 틀렸습니다.");
+	    	    return;
+	    	}
+	    }
 }

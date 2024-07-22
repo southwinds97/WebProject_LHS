@@ -466,9 +466,9 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
             </ul>
           </nav>
           <% if (session.getAttribute("UserId") == null) { %>
-          <a href="login.jsp" class="login"></a>
+          <a href="login.do" class="login"></a>
           <% } else if (session.getAttribute("UserId") != null) { %>
-          <a href="ProFil.jsp" class="profil"></a>
+          <a href="ProFil.do" class="profil"></a>
           <% } %>
           <div class="side_wrap">
             <ul class="home_lang">
@@ -821,39 +821,55 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
         <div class="contents">
           <div class="inner">
             <div class="login_area">
-              <h2>ID 로그인</h2>
-              <form
-                name="loginFrm"
-                method="post"
-                action="login.do"
-                onsubmit="return validateForm(this);"
-              >
-                <fieldset>
-                  <legend>로그인</legend>
-                  <div class="row input_wrap1">
-                    <input type="text" name="user_id" placeholder="아이디" />
-                  </div>
-                  <div class="row input_wrap2">
-                    <input
-                      type="password"
-                      name="user_pw"
-                      placeholder="비밀번호"
-                    />
-                  </div>
-                  <div class="row row3">
-                    <div class="checkbox_wrap">
-                      <input id="check1" type="checkbox" class="blind" />
-                      <label for="check1">로그인 상태 유지</label>
-                    </div>
-                  </div>
-                  <input type="submit" value="로그인" class="login_btn" />
-                </fieldset>
-              </form>
+                <h2>ID 로그인</h2>
+                <form name="loginFrm" method="post" action="login.do" onsubmit="return validateForm(this);">
+                    <fieldset>
+                        <legend>로그인</legend>
+                        <div class="row input_wrap1">
+                            <input type="text" name="user_id" placeholder="아이디" />
+                        </div>
+                        <div class="row input_wrap2">
+                            <input type="password" name="user_pw" placeholder="비밀번호" />
+                        </div>
+                        <div class="row row3">
+                            <div class="checkbox_wrap">
+                                <input id="check1" type="checkbox" class="blind" onchange="saveId()" />
+                                <label for="check1">Id 저장</label>
+                            </div>
+                        </div>
+                        <script>
+                            window.onload = function() {
+                                var savedId = getCookie("savedId");
+                                if (savedId) {
+                                    document.getElementsByName('user_id')[0].value = savedId;
+                                    document.getElementById('check1').checked = true;
+                                }
+                            }
+            
+                            function saveId() {
+                                var checkbox = document.getElementById('check1');
+                                if (checkbox.checked) {
+                                    var id = document.getElementsByName('user_id')[0].value;
+                                    document.cookie = "savedId=" + id + ";path=/;max-age=" + 60 * 60 * 24 * 7;
+                                } else {
+                                    document.cookie = "savedId=;path=/;max-age=-1";
+                                }
+                            }
+            
+                            function getCookie(name) {
+                                var value = "; " + document.cookie;
+                                var parts = value.split("; " + name + "=");
+                                if (parts.length == 2) return parts.pop().split(";").shift();
+                            }
+                        </script>
+                        <input type="submit" value="로그인" class="login_btn" />
+                    </fieldset>
+                </form>
             </div>
             <ul class="link_wrap">
-              <li><a href="#">비밀번호 찾기</a></li>
-              <li><a href="#">아이디 찾기</a></li>
-              <li><a href="Register.do">회원가입</a></li>
+                <li><a href="find.do?mode=findId">아이디 찾기</a></li>
+                <li><a href="find.do?mode=findPw">비밀번호 찾기</a></li>
+                <li><a href="Register.do">회원가입</a></li>
             </ul>
           </div>
         </div>

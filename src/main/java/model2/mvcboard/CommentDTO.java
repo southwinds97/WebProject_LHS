@@ -7,9 +7,9 @@ public class CommentDTO {
     private String id;
     private String name;
     private String content;
-    private java.sql.Date postdate;
+    private java.sql.Date commentdate;
 
-    public String getIdx() {
+	public String getIdx() {
     	return idx;
     }
     public void setIdx(String idx) {
@@ -39,10 +39,11 @@ public class CommentDTO {
     public void setContent(String content) {
     	this.content = content;
     }
-    public java.sql.Date getPostdate() {
-    	return postdate;
+    public java.sql.Date getCommentdate() {
+    	return commentdate;
     }
-    public void setPostdate(java.sql.Date postdate) {
-    	this.postdate = postdate;
+    public void setCommentdate(java.sql.Date commentdate) {
+    	this.commentdate = commentdate;
     }
+   
 }
