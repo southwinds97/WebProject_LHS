@@ -73,15 +73,44 @@
            return false;
        }
    }
-       function disableValidation() {
-	    var form = document.forms['registerFrm'];
-	    var originalOnsubmit = form.onsubmit;
-	    form.onsubmit = null;
-	    setTimeout(function() {
-	        form.onsubmit = originalOnsubmit;
-	    }, 100);
-   }
+   function checkIdDuplication() {
+    var userId = document.forms['registerFrm']['user_id'].value;
 
+    // XMLHttpRequest 객체를 생성합니다.
+    var xhr = new XMLHttpRequest();
+
+    // 요청을 초기화합니다.
+    xhr.open('POST', './chkId.do', true);
+
+    // 요청 헤더를 설정합니다.
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+    // 요청을 전송합니다.
+    xhr.send('user_id=' + encodeURIComponent(userId));
+
+    // 요청의 상태가 변경되면 실행될 함수를 설정합니다.
+    xhr.onreadystatechange = function() {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+        // 응답을 로그에 출력합니다.
+        console.log(xhr.responseText);
+
+        try {
+            // 응답을 JSON으로 파싱합니다.
+            var response = JSON.parse(xhr.responseText);
+
+            // 결과에 따라 메시지를 표시합니다.
+            if (response.success) {
+                alert(response.message);
+                document.getElementsByName('idchk')[0].value = '1';
+            } else {
+                alert(response.message);
+            }
+        } catch (e) {
+            alert("서버에서 예상치 못한 응답이 반환되었습니다.");
+        }
+    }
+};
+}
  </script>
 <body>
   <div id="skip_navi"> <a href="#container">본문바로가기</a> </div>
@@ -607,7 +636,8 @@
                 <legend>회원가입</legend>
                 <div class="row input_register1" >
                   <input type="text" name="user_id" placeholder="ID(6~12자의 영문소문자와 숫자만 사용할 수 있습니다.)"  style="width: 80%"/>
-                  <input type="submit" name="action" value="중복확인" class="idchk_btn" onclick="disableValidation()"/>
+                  <input type="button" value="중복 확인" onclick="checkIdDuplication()">
+                  <input type="hidden" name="idchk" value="0">
                 </div>
                 <div class="row input_register2">
                     <input type="text" name="user_pw" placeholder="비밀번호" />

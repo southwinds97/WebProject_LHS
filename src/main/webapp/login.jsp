@@ -838,6 +838,7 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
                             </div>
                         </div>
                         <script>
+                        // id 저장 쿠키
                             window.onload = function() {
                                 var savedId = getCookie("savedId");
                                 if (savedId) {

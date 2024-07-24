@@ -30,23 +30,18 @@ public class RegisterController extends HttpServlet {
 	    String name = req.getParameter("name");
 	    String email = req.getParameter("email");
 	    String phoneNumber = req.getParameter("phone_number");
+        String idchk = req.getParameter("idchk");
         
         MemberDAO dao = new MemberDAO();
-        boolean isDuplicate = dao.idCheck(userId);
         
-        //아이디가 6~12자의 영문소문자와 숫자로만 입력되었는지 확인
-        if (!userId.matches("^[a-z0-9]{6,12}$")) {
-            JSFunction.alertBack(resp, "아이디는 6~12자의 영문소문자와 숫자로만 입력해주세요.");
-            return;
-        } else if (isDuplicate) {
-            // ID가 중복되면 경고창을 표시하고 회원가입 페이지로 돌아갑니다.
-            JSFunction.alertBack(resp, "이미 사용 중인 ID입니다.");
-            return;
-        } else if (!isDuplicate) {
-            JSFunction.alertBack(resp, "사용 가능한 ID입니다.");
-            return;
-        } 
+        System.out.println(idchk);
         
+        // idchk 값이 1이 아니면 ID 중복 검사를 수행합니다.
+        if (!"1".equals(idchk)) {
+            JSFunction.alertBack(resp, "아이디 중복 검사를 수행해주세요.");
+            return;
+        }
+            
 	    // DTO 객체를 생성하고 값을 설정합니다.
 	    MemberDTO dto = new MemberDTO();
 	    dto.setId(userId);
